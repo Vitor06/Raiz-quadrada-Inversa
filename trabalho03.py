@@ -2,6 +2,8 @@ from cmath import sqrt
 from ctypes import c_float, c_int32, cast, byref, POINTER,Union,c_int
 import ctypes
 from prettytable import PrettyTable
+import matplotlib.pyplot as plt
+
 ERRO = 1000
 D = 10
 TOLERANCIA = 10**-D-1
@@ -15,6 +17,10 @@ class union(Union):
 table_newton_rapson = PrettyTable()
 table_inversa_newton_rapson = PrettyTable()
 
+def desenhar_ponto(ponto,color,text,i,j):
+    plt.plot(ponto[0], ponto[1], marker="o", markersize=5, markeredgecolor=color, markerfacecolor=color,label=text,)#Posicao real
+    # plt.set_title(text)
+    plt.legend()
 
 def raiz_quadrada_newton_rapson():
     global ERRO,TOLERANCIA,xk,A,itmax
@@ -84,6 +90,8 @@ def main():
     print(table_newton_rapson)
     inversa = 1/raiz
     print('Inversa: '+str(inversa))
+    desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
+    plt.show()
 
     print("--------1/SQRT(A)--------\n")
     inversa2,xk2,x_k_1_2,erro2  = raiz_inversa_newton_rapson()
@@ -93,6 +101,10 @@ def main():
     table_inversa_newton_rapson.add_column("Erro",erro2)
     print(table_inversa_newton_rapson)
     print("Inversa:"+str(inversa2))
+    desenhar_ponto((range(itmax),erro2),"red","Erro SQRT(A)=>1/SQRT(A)",0,0)
+    plt.show()
+
+
 
 
     print()
