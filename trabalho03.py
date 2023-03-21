@@ -79,9 +79,14 @@ def fracao (A):
     return soma
 
 def main():
-    N = 10
+    N = 10000
     erro_list_calculadora_raiz_newton_rapson,erro_list_calculadora_inversa_taroli,erro_list_calculadora_inversa_direto_newton_rapson = [],[],[]
     x_list = []
+    inversa_raiz_newton_rapson_list = []
+    inversa_direto_newton_rapson_list = []
+    inversa_taroli_list = []
+    inversa_calculadora_list = []
+
     for x in range(1,N,1):
         print()
         # print("X = "+str(x))
@@ -93,12 +98,14 @@ def main():
         # table_newton_rapson.add_column("Erro",erro1)
         # print(table_newton_rapson)
         inversa_raiz_newton_rapson = 1/raiz
+        inversa_raiz_newton_rapson_list.append(inversa_raiz_newton_rapson)
         # print('Inversa: '+str(inversa_raiz_newton_rapson)+'\n')
         # desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
         # plt.show()
 
         # print("1/SQRT(A)")
         inversa_direto_newton_rapson,xk2,x_k_1_2,erro2  = raiz_inversa_newton_rapson(x)
+        inversa_direto_newton_rapson_list.append(inversa_direto_newton_rapson)
         # table_inversa_newton_rapson.add_column("K",range(itmax))
         # table_inversa_newton_rapson.add_column("xk",xk2)
         # table_inversa_newton_rapson.add_column("xk+1",x_k_1_2)
@@ -110,9 +117,11 @@ def main():
         # print()
         # print("Metodo de gary Tarolli")
         inversa_taroli = raiz_inversa_tarolli(x)
+        inversa_taroli_list.append(inversa_taroli)
         # print(inversa_taroli)
 
         inversa_calculadora = 1/raiz_calculadora(x)
+        inversa_calculadora_list.append(inversa_calculadora)
 
         # print("\nCalculadora -> "+str(inversa_calculadora))
 
@@ -137,6 +146,16 @@ def main():
 
     plt.xlabel('X')
     plt.ylabel('Erro')
+    plt.legend()
+    plt.show()
+
+    plt.plot(x_list,inversa_raiz_newton_rapson_list,label = "1/newton_rapson")
+    plt.plot(x_list,inversa_direto_newton_rapson_list,label = "direta newton_rapson")
+    plt.plot(x_list,inversa_taroli_list,label = "Tarolli")
+    plt.plot(x_list,inversa_calculadora_list,label = "Calculadora")
+
+    plt.xlabel('X')
+    plt.ylabel('Valores')
     plt.legend()
     plt.show()
 
