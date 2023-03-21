@@ -2,10 +2,11 @@ from cmath import sqrt
 from ctypes import c_float, c_int32, cast, byref, POINTER,Union,c_int
 import ctypes
 import math
+import time
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 
-D = 10
+D = 3
 TOLERANCIA = 10**-D-1
 itmax =20
 class union(Union):
@@ -87,25 +88,43 @@ def main():
     inversa_taroli_list = []
     inversa_calculadora_list = []
 
+    tempo_inversa_raiz_newton_rapson = []
+    tempo_inversa_direto_newton_rapson = []
+    tempo_inversa__tarolin = []
+    tempo_inversa_calculadora = []
+
+
     for x in range(1,N,1):
         print()
         # print("X = "+str(x))
         # print("SQRT(A)=>1/SQRT(A)")
+        start_raiz_quadrada_newton_rapson = time.time()
         raiz,xk1,x_k_1_1,erro1 = raiz_quadrada_newton_rapson(x)
         # table_newton_rapson.add_column("K",range(itmax))
         # table_newton_rapson.add_column("xk",xk1)
         # table_newton_rapson.add_column("xk+1",x_k_1_1)
         # table_newton_rapson.add_column("Erro",erro1)
         # print(table_newton_rapson)
+        
         inversa_raiz_newton_rapson = 1/raiz
+        fim_raiz_quadrada_newton_rapson = time.time()
         inversa_raiz_newton_rapson_list.append(inversa_raiz_newton_rapson)
+
+        tempo_inversa_raiz_newton_rapson.append(fim_raiz_quadrada_newton_rapson-start_raiz_quadrada_newton_rapson)
+
         # print('Inversa: '+str(inversa_raiz_newton_rapson)+'\n')
         # desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
         # plt.show()
 
         # print("1/SQRT(A)")
+
+        start_inversa_direto_newton_rapson =  time.time()
         inversa_direto_newton_rapson,xk2,x_k_1_2,erro2  = raiz_inversa_newton_rapson(x)
+        fim_inversa_direto_newton_rapson = time.time()
+
+        tempo_inversa_direto_newton_rapson.append(fim_inversa_direto_newton_rapson-start_inversa_direto_newton_rapson)
         inversa_direto_newton_rapson_list.append(inversa_direto_newton_rapson)
+
         # table_inversa_newton_rapson.add_column("K",range(itmax))
         # table_inversa_newton_rapson.add_column("xk",xk2)
         # table_inversa_newton_rapson.add_column("xk+1",x_k_1_2)
@@ -116,11 +135,21 @@ def main():
 
         # print()
         # print("Metodo de gary Tarolli")
+
+        start_inversa_taroli=  time.time()
         inversa_taroli = raiz_inversa_tarolli(x)
+        fim_inversa_taroli =  time.time()
+
+        tempo_inversa__tarolin.append(fim_inversa_taroli-start_inversa_taroli)
         inversa_taroli_list.append(inversa_taroli)
+
         # print(inversa_taroli)
 
+        start_inversa_calculadora = time.time()
         inversa_calculadora = 1/raiz_calculadora(x)
+        fim_inversa_calculadora = time.time()
+
+        tempo_inversa_calculadora.append(fim_inversa_calculadora-start_inversa_calculadora)
         inversa_calculadora_list.append(inversa_calculadora)
 
         # print("\nCalculadora -> "+str(inversa_calculadora))
@@ -156,6 +185,16 @@ def main():
 
     plt.xlabel('X')
     plt.ylabel('Valores')
+    plt.legend()
+    plt.show()
+
+    plt.plot(x_list,tempo_inversa_raiz_newton_rapson,label = "1/newton_rapson")
+    plt.plot(x_list,tempo_inversa_direto_newton_rapson,label = "direta newton_rapson")
+    plt.plot(x_list,tempo_inversa__tarolin,label = "Tarolli")
+    plt.plot(x_list,tempo_inversa_calculadora,label = "Calculadora")
+
+    plt.xlabel('X')
+    plt.ylabel('Tempo')
     plt.legend()
     plt.show()
 
