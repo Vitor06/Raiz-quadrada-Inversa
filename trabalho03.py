@@ -1,17 +1,16 @@
 from cmath import sqrt
 from ctypes import c_float, c_int32, cast, byref, POINTER,Union,c_int
 import ctypes
+import math
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 
-ERRO = 1000
 D = 10
 TOLERANCIA = 10**-D-1
-A = 625#sqrt(A)
 itmax =20
 class union(Union):
     _fields_ = [("x", c_float),
-                ("k", c_int)]
+                ("k", c_int32)]
 
 
 table_newton_rapson = PrettyTable()
@@ -22,38 +21,37 @@ def desenhar_ponto(ponto,color,text,i,j):
     # plt.set_title(text)
     plt.legend()
 
-def raiz_quadrada_newton_rapson():
-    global ERRO,TOLERANCIA,xk,A,itmax
+def raiz_quadrada_newton_rapson(A):
+    global TOLERANCIA,xk,itmax
+    erro =1000
     k ,x0 =0, 1+(fracao(A)/2)
     xk = x0
     xk_list,xk_1_list,erro_list = [],[],[]
-    while ERRO>TOLERANCIA and k<itmax:
+    while erro>TOLERANCIA and k<itmax:
         x_k_1 = 0.5*(xk+A/xk)
 
         xk_list.append(xk)
         xk_1_list.append(x_k_1)
 
-        ERRO  =abs(x_k_1 - xk)
-        erro_list.append(ERRO)
+        erro  =abs(x_k_1 - xk)
+        erro_list.append(erro)
         xk  = x_k_1
 
         k+=1
     return xk,xk_list,xk_1_list,erro_list
 
-def raiz_inversa_newton_rapson():
-    global ERRO,TOLERANCIA,xk,A,itmax,k
-    k ,x0 =0, 0.02
-    print(x0)
+def raiz_inversa_newton_rapson(A):
+    global TOLERANCIA,xk,itmax,k
+    erro =1000
+    k ,x0 =0, 0.002
     xk = x0
     xk_list,xk_1_list,erro_list = [],[],[]
-    while ERRO>TOLERANCIA and k<itmax:
+    while erro>TOLERANCIA and k<itmax:
         x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
         xk_list.append(xk)
         xk_1_list.append(x_k_1)
-
-        ERRO  =abs(x_k_1 - xk)
-        erro_list.append(ERRO)
-
+        erro  =abs(x_k_1 - xk)
+        erro_list.append(erro)
         xk  = x_k_1
 
         k+=1
@@ -66,6 +64,9 @@ def raiz_inversa_tarolli(x):
     u.x = u.x *(1.5 - x2*u.x*u.x)
     return u.x
 
+def raiz_calculadora(x):
+    return math.sqrt(x)
+
 def fracao (A):
     x0 = list(bin(ctypes.c_uint32.from_buffer(ctypes.c_float(A)).value))
     x0 = x0[10:len(x0)]
@@ -75,42 +76,69 @@ def fracao (A):
         if(i!="0"):
             soma  = soma +2**(k)
         k-=1
-    print(soma)
     return soma
 
 def main():
+    N = 10
+    erro_list_calculadora_raiz_newton_rapson,erro_list_calculadora_inversa_taroli,erro_list_calculadora_inversa_direto_newton_rapson = [],[],[]
+    x_list = []
+    for x in range(1,N,1):
+        print()
+        # print("X = "+str(x))
+        # print("SQRT(A)=>1/SQRT(A)")
+        raiz,xk1,x_k_1_1,erro1 = raiz_quadrada_newton_rapson(x)
+        # table_newton_rapson.add_column("K",range(itmax))
+        # table_newton_rapson.add_column("xk",xk1)
+        # table_newton_rapson.add_column("xk+1",x_k_1_1)
+        # table_newton_rapson.add_column("Erro",erro1)
+        # print(table_newton_rapson)
+        inversa_raiz_newton_rapson = 1/raiz
+        # print('Inversa: '+str(inversa_raiz_newton_rapson)+'\n')
+        # desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
+        # plt.show()
 
+        # print("1/SQRT(A)")
+        inversa_direto_newton_rapson,xk2,x_k_1_2,erro2  = raiz_inversa_newton_rapson(x)
+        # table_inversa_newton_rapson.add_column("K",range(itmax))
+        # table_inversa_newton_rapson.add_column("xk",xk2)
+        # table_inversa_newton_rapson.add_column("xk+1",x_k_1_2)
+        # table_inversa_newton_rapson.add_column("Erro",erro2)
+        # print(table_inversa_newton_rapson)
+        # print("Inversa:"+str(inversa_direto_newton_rapson)+'\n')
+        # desenhar_ponto((range(itmax),erro2),"red","Erro SQRT(A)=>1/SQRT(A)",0,0)
 
-    print("--------SQRT(A)=>1/SQRT(A)--------\n")
-    raiz,xk1,x_k_1_1,erro1 = raiz_quadrada_newton_rapson()
-    table_newton_rapson.add_column("K",range(itmax))
-    table_newton_rapson.add_column("xk",xk1)
-    table_newton_rapson.add_column("xk+1",x_k_1_1)
-    table_newton_rapson.add_column("Erro",erro1)
-    print(table_newton_rapson)
-    inversa = 1/raiz
-    print('Inversa: '+str(inversa))
-    desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
+        # print()
+        # print("Metodo de gary Tarolli")
+        inversa_taroli = raiz_inversa_tarolli(x)
+        # print(inversa_taroli)
+
+        inversa_calculadora = 1/raiz_calculadora(x)
+
+        # print("\nCalculadora -> "+str(inversa_calculadora))
+
+        erro_calculadora_raiz_newton_rapson = abs(inversa_raiz_newton_rapson - inversa_calculadora)
+        erro_calculadora_inversa_taroli = abs(inversa_taroli - inversa_calculadora)
+        erro_calculadora_inversa_direto_newton_rapson = abs(inversa_direto_newton_rapson - inversa_calculadora)
+
+        erro_list_calculadora_raiz_newton_rapson.append(erro_calculadora_raiz_newton_rapson)
+        erro_list_calculadora_inversa_taroli.append(erro_calculadora_inversa_taroli)
+        erro_list_calculadora_inversa_direto_newton_rapson.append(erro_calculadora_inversa_direto_newton_rapson)
+        x_list.append(x)
+
+        # print()
+        # print("Erro Calculadora X 1/raiz_newton_rapson -> " + str(erro_calculadora_raiz_newton_rapson) )
+        # print("Erro Calculadora X Tarolli -> " + str(erro_calculadora_inversa_taroli) )
+        # print("Erro Calculadora X inversa_newton_rapson -> " +str(erro_calculadora_inversa_direto_newton_rapson) )
+        # print("---------------------------------------------------")
+
+    plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson')
+    plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli')
+    plt.plot(x_list,erro_list_calculadora_inversa_direto_newton_rapson,label='Calculadora X inversa_direto_newton_rapson ')
+
+    plt.xlabel('X')
+    plt.ylabel('Erro')
+    plt.legend()
     plt.show()
-
-    print("--------1/SQRT(A)--------\n")
-    inversa2,xk2,x_k_1_2,erro2  = raiz_inversa_newton_rapson()
-    table_inversa_newton_rapson.add_column("K",range(itmax))
-    table_inversa_newton_rapson.add_column("xk",xk2)
-    table_inversa_newton_rapson.add_column("xk+1",x_k_1_2)
-    table_inversa_newton_rapson.add_column("Erro",erro2)
-    print(table_inversa_newton_rapson)
-    print("Inversa:"+str(inversa2))
-    desenhar_ponto((range(itmax),erro2),"red","Erro SQRT(A)=>1/SQRT(A)",0,0)
-    plt.show()
-
-
-
-
-    print()
-    print("Metodo de gary Tarolli")
-    inversa3 = raiz_inversa_tarolli(A)
-    print(inversa3)
 
 
 main()
