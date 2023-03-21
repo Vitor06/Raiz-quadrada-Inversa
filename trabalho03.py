@@ -105,12 +105,13 @@ def main():
         # table_newton_rapson.add_column("xk+1",x_k_1_1)
         # table_newton_rapson.add_column("Erro",erro1)
         # print(table_newton_rapson)
-        
+
         inversa_raiz_newton_rapson = 1/raiz
         fim_raiz_quadrada_newton_rapson = time.time()
+        tempo_inversa_raiz_newton_rapson.append(fim_raiz_quadrada_newton_rapson-start_raiz_quadrada_newton_rapson)
+
         inversa_raiz_newton_rapson_list.append(inversa_raiz_newton_rapson)
 
-        tempo_inversa_raiz_newton_rapson.append(fim_raiz_quadrada_newton_rapson-start_raiz_quadrada_newton_rapson)
 
         # print('Inversa: '+str(inversa_raiz_newton_rapson)+'\n')
         # desenhar_ponto((range(itmax),erro1),"green","Erro SQRT(A)=>1/SQRT(A)",0,0)
@@ -154,6 +155,7 @@ def main():
 
         # print("\nCalculadora -> "+str(inversa_calculadora))
 
+        #Calculo dos erros
         erro_calculadora_raiz_newton_rapson = abs(inversa_raiz_newton_rapson - inversa_calculadora)
         erro_calculadora_inversa_taroli = abs(inversa_taroli - inversa_calculadora)
         erro_calculadora_inversa_direto_newton_rapson = abs(inversa_direto_newton_rapson - inversa_calculadora)
@@ -169,6 +171,7 @@ def main():
         # print("Erro Calculadora X inversa_newton_rapson -> " +str(erro_calculadora_inversa_direto_newton_rapson) )
         # print("---------------------------------------------------")
 
+    #Gráficos
     plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson')
     plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli')
     plt.plot(x_list,erro_list_calculadora_inversa_direto_newton_rapson,label='Calculadora X inversa_direto_newton_rapson ')
