@@ -6,56 +6,27 @@ import time
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 
-D = 10
-TOLERANCIA = 10**-D-1
-itmax =20
 class union(Union):
     _fields_ = [("x", c_float),
                 ("k", c_int32)]
-
-
-table_newton_rapson = PrettyTable()
-table_inversa_newton_rapson = PrettyTable()
-
 def desenhar_ponto(ponto,color,text,i,j):
     plt.plot(ponto[0], ponto[1], marker="o", markersize=5, markeredgecolor=color, markerfacecolor=color,label=text,)#Posicao real
     # plt.set_title(text)
     plt.legend()
 
 def raiz_quadrada_newton_rapson(A):
-    global TOLERANCIA,itmax
-    erro =1000
-    k ,x0 =0,0.02 #1+(fracao(A)/2)
+    x0 =1+(fracao(A)/2)
     xk = x0
-    xk_list,xk_1_list,erro_list = [],[],[]
-    while erro>TOLERANCIA and k<itmax:
-        x_k_1 = 0.5*(xk+A/xk)
-
-        xk_list.append(xk)
-        xk_1_list.append(x_k_1)
-
-        erro  =abs(x_k_1 - xk)
-        erro_list.append(erro)
-        xk  = x_k_1
-
-        k+=1
+    x_k_1 = 0.5*(xk+A/xk)
+    xk  = x_k_1
     return xk
 
 def raiz_inversa_newton_rapson(A):
-    global TOLERANCIA,itmax,k
-    erro =1000
-    k ,x0 =0, 0.002
+    x0 =0.02#(2+fracao(A))/2
     xk = x0
-    xk_list,xk_1_list,erro_list = [],[],[]
-    while erro>TOLERANCIA and k<itmax:
-        x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
-        xk_list.append(xk)
-        xk_1_list.append(x_k_1)
-        erro  =abs(x_k_1 - xk)
-        erro_list.append(erro)
-        xk  = x_k_1
+    x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
+    xk  = x_k_1
 
-        k+=1
     return xk
 
 def raiz_inversa_tarolli(x):
@@ -136,15 +107,15 @@ def main():
         erro_list_calculadora_inversa_direto_newton_rapson.append(erro_calculadora_inversa_direto_newton_rapson)
         x_list.append(x)
 
-        # print(inversa_calculadora,inversa_raiz_newton_rapson,inversa_direto_newton_rapson,inversa_taroli)
+        print(inversa_calculadora,inversa_raiz_newton_rapson,inversa_direto_newton_rapson,inversa_taroli)
 
     #Gráficos
 
-    plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson',scaley='log')
-    plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli',scaley='log')
-    plt.plot(x_list,erro_list_calculadora_inversa_direto_newton_rapson,scaley='log',label='Calculadora X inversa_direto_newton_rapson ')
+    plt.plot(x_list,erro_list_calculadora_inversa_direto_newton_rapson,label='Calculadora X inversa_direto_newton_rapson ')
+    plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli')
+    plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson')
 
-    # plt.yscale('log')
+    plt.yscale('logit')
     plt.xlabel('Argumento')
     plt.ylabel('Erro')
     plt.legend()
@@ -155,7 +126,7 @@ def main():
     plt.plot(x_list,inversa_taroli_list,label = "Tarolli")
     plt.plot(x_list,inversa_calculadora_list,label = "Calculadora")
 
-    # plt.yscale('log')
+    plt.yscale('logit')
     plt.xlabel('Argumento')
     plt.ylabel('Valores')
     plt.legend()
