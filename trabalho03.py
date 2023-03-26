@@ -22,7 +22,7 @@ def raiz_quadrada_newton_rapson(A):
     return xk
 
 def raiz_inversa_newton_rapson(A):
-    x0 =0.02#(2+fracao(A))/2
+    x0 =(2+fracao(A))/2
     xk = x0
     x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
     xk  = x_k_1
@@ -107,7 +107,7 @@ def main():
         erro_list_calculadora_inversa_direto_newton_rapson.append(erro_calculadora_inversa_direto_newton_rapson)
         x_list.append(x)
 
-        print(inversa_calculadora,inversa_raiz_newton_rapson,inversa_direto_newton_rapson,inversa_taroli)
+        # print(inversa_calculadora,inversa_raiz_newton_rapson,inversa_direto_newton_rapson,inversa_taroli)
 
     #Gráficos
 
@@ -115,7 +115,7 @@ def main():
     plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli')
     plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson')
 
-    plt.yscale('logit')
+    plt.yscale('log')
     plt.xlabel('Argumento')
     plt.ylabel('Erro')
     plt.legend()
@@ -126,7 +126,7 @@ def main():
     plt.plot(x_list,inversa_taroli_list,label = "Tarolli")
     plt.plot(x_list,inversa_calculadora_list,label = "Calculadora")
 
-    plt.yscale('logit')
+    plt.yscale('log')
     plt.xlabel('Argumento')
     plt.ylabel('Valores')
     plt.legend()
