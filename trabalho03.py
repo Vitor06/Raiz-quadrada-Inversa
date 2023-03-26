@@ -51,6 +51,11 @@ def fracao (A):
         k-=1
     return soma
 
+def fracao2(x):
+    k = int(math.log(x,2))
+    f = (x/2**k)-1
+
+    return f
 def main():
     N = 1000
     erro_list_calculadora_raiz_newton_rapson,erro_list_calculadora_inversa_taroli,erro_list_calculadora_inversa_direto_newton_rapson = [],[],[]
