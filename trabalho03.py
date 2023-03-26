@@ -15,14 +15,14 @@ def desenhar_ponto(ponto,color,text,i,j):
     plt.legend()
 
 def raiz_quadrada_newton_rapson(A):
-    x0 =1+(fracao2(A)/2)
+    x0 =1+(fracao_mantisaa(A)/2)
     xk = x0
     x_k_1 = 0.5*(xk+A/xk)
     xk  = x_k_1
     return xk
 
 def raiz_inversa_newton_rapson(A):
-    x0 =(2+fracao2(A))/2
+    x0 =(2+fracao_mantisaa(A))/2
     xk = x0
     x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
     xk  = x_k_1
@@ -51,7 +51,7 @@ def fracao (A):
         k-=1
     return soma
 
-def fracao2(x):
+def fracao_mantisaa(x):
     k = int(math.log(x,2))
     f = (x/2**k)-1
 
@@ -71,7 +71,6 @@ def main():
     tempo_inversa_calculadora = []
 
     for x in range(1,N,1):
-        print(fracao(x),fracao2(x))
         start_raiz_quadrada_newton_rapson = time.time()
         raiz = raiz_quadrada_newton_rapson(x)
 
