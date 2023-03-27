@@ -1,9 +1,7 @@
-from cmath import sqrt
-from ctypes import c_float, c_int32, cast, byref, POINTER,Union,c_int
+from ctypes import c_float, c_int32,Union
 import ctypes
 import math
 import time
-from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 
 class union(Union):
@@ -22,7 +20,7 @@ def raiz_quadrada_newton_rapson(A):
     return xk
 
 def raiz_inversa_newton_rapson(A):
-    x0 =(2+fracao_mantisaa(A))/2
+    x0 =2/(2+fracao_mantisaa(A))
     xk = x0
     x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
     xk  = x_k_1
@@ -57,7 +55,7 @@ def fracao_mantisaa(x):
 
     return f
 def main():
-    N = 100
+    N = 1000
     erro_list_calculadora_raiz_newton_rapson,erro_list_calculadora_inversa_taroli,erro_list_calculadora_inversa_direto_newton_rapson = [],[],[]
     x_list = []
     inversa_raiz_newton_rapson_list = []
