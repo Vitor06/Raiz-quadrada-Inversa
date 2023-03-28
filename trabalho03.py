@@ -69,6 +69,7 @@ def main():
     tempo_inversa_calculadora = []
 
     for x in range(1,N,1):
+
         start_raiz_quadrada_newton_rapson = time.time()
         raiz = raiz_quadrada_newton_rapson(x)
 
@@ -120,7 +121,7 @@ def main():
 
     plt.yscale('log')
     plt.xlabel('Argumento')
-    plt.ylabel('Erro')
+    plt.ylabel('Erro(log)')
     plt.legend()
     plt.show()
 
@@ -129,9 +130,9 @@ def main():
     plt.plot(x_list,inversa_taroli_list,label = "Tarolli")
     plt.plot(x_list,inversa_calculadora_list,label = "Calculadora")
 
-    plt.yscale('log')
+    plt.yscale('symlog')
     plt.xlabel('Argumento')
-    plt.ylabel('Valores')
+    plt.ylabel('Valores(symlog)')
     plt.legend()
     plt.show()
 
