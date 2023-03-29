@@ -7,22 +7,26 @@ import matplotlib.pyplot as plt
 class union(Union):
     _fields_ = [("x", c_float),
                 ("k", c_int32)]
+
+
 def desenhar_ponto(ponto,color,text,i,j):
     plt.plot(ponto[0], ponto[1], marker="o", markersize=5, markeredgecolor=color, markerfacecolor=color,label=text,)#Posicao real
     # plt.set_title(text)
     plt.legend()
 
 def raiz_quadrada_newton_rapson(A):
-    x0 =1+(fracao_mantisaa(A)/2)
+    x0 =aproximacao_da_raiz(A)
     xk = x0
     x_k_1 = 0.5*(xk+A/xk)
     xk  = x_k_1
     return xk
 
 def raiz_inversa_newton_rapson(A):
-    x0 =2/(2+fracao_mantisaa(A))
+    D = 0.5*A#constante
+    C = 1/aproximacao_da_raiz(A)#constante
+    x0 =C
     xk = x0
-    x_k_1 = xk*(1.5 - 0.5*A*(xk**2))
+    x_k_1 = xk*(1.5 - D*(xk**2))
     xk  = x_k_1
 
     return xk
@@ -38,22 +42,13 @@ def raiz_inversa_tarolli(x):
 def raiz_calculadora(x):
     return math.sqrt(x)
 
-def fracao (A):
-    x0 = list(bin(ctypes.c_uint32.from_buffer(ctypes.c_float(A)).value))
-    x0 = x0[10:len(x0)]
-    soma = 0
-    k = -1
-    for i in x0:
-        if(i!="0"):
-            soma  = soma +2**(k)
-        k-=1
-    return soma
-
-def fracao_mantisaa(x):
-    k = int(math.log(x,2))
-    f = (x/2**k)-1
-
-    return f
+def aproximacao_da_raiz(A):
+        val= union()
+        val.x = A
+        val.k -= 1<<23
+        val.k >>=1
+        val.k += 1<<29
+        return val.x
 def main():
     N = 1000
     erro_list_calculadora_raiz_newton_rapson,erro_list_calculadora_inversa_taroli,erro_list_calculadora_inversa_direto_newton_rapson = [],[],[]
@@ -67,7 +62,6 @@ def main():
     tempo_inversa_direto_newton_rapson = []
     tempo_inversa__tarolin = []
     tempo_inversa_calculadora = []
-
     for x in range(1,N,1):
 
         start_raiz_quadrada_newton_rapson = time.time()
@@ -112,16 +106,14 @@ def main():
         x_list.append(x)
 
         # print(inversa_calculadora,inversa_raiz_newton_rapson,inversa_direto_newton_rapson,inversa_taroli)
-
     #Gráficos
 
     plt.plot(x_list,erro_list_calculadora_inversa_direto_newton_rapson,label='Calculadora X inversa_direto_newton_rapson ')
     plt.plot(x_list,erro_list_calculadora_inversa_taroli,label='Calculadora X Tarolli')
     plt.plot(x_list,erro_list_calculadora_raiz_newton_rapson,label='Calculadora X raiz_newton_rapson')
 
-    plt.yscale('log')
     plt.xlabel('Argumento')
-    plt.ylabel('Erro(log)')
+    plt.ylabel('Erro')
     plt.legend()
     plt.show()
 
@@ -130,9 +122,9 @@ def main():
     plt.plot(x_list,inversa_taroli_list,label = "Tarolli")
     plt.plot(x_list,inversa_calculadora_list,label = "Calculadora")
 
-    plt.yscale('symlog')
+    plt.yscale('log')
     plt.xlabel('Argumento')
-    plt.ylabel('Valores(symlog)')
+    plt.ylabel('Valores')
     plt.legend()
     plt.show()
 
